@@ -18,7 +18,7 @@ import { ArchitectureEvidenceResult } from '../../models/analysis-response.model
       </div>
 
       <!-- Evidencias Específicas de Arquitectura Frontend -->
-      <div class="frontend-box" *ngIf="evidence.frontendEvidenceNotes?.length">
+      <div class="frontend-box" *ngIf="evidence.projectKind !== 'BACKEND' && evidence.frontendEvidenceNotes?.length">
         <h4 class="box-subtitle">🎨 Evidencias de Arquitectura Frontend</h4>
         <div class="frontend-notes-list">
           <div *ngFor="let note of evidence.frontendEvidenceNotes" class="frontend-note-item">
