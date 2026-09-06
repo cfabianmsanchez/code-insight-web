@@ -6,8 +6,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "format": "prettier --write \"src/**/*.{ts,html,css,json,scss}\"",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",

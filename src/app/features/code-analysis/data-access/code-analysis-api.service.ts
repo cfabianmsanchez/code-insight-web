@@ -1,16 +1,16 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '@env/environment';
-import { GithubAnalysisRequestDto } from '../models/analysis-request.model';
-import { RepositoryAnalysisResponseDto } from '../models/analysis-response.model';
-import { SystemConfigResponseDto } from '../models/system-config.model';
+import { Injectable, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "@env/environment";
+import { GithubAnalysisRequestDto } from "../models/analysis-request.model";
+import { RepositoryAnalysisResponseDto } from "../models/analysis-response.model";
+import { SystemConfigResponseDto } from "../models/system-config.model";
 
 /**
  * Servicio de acceso a datos HTTP REST para comunicarse con el backend code-insight-api.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class CodeAnalysisApiService {
   private readonly http = inject(HttpClient);
@@ -28,25 +28,38 @@ export class CodeAnalysisApiService {
    * Actualiza el modelo de IA activo en el backend.
    */
   updateActiveModel(model: string): Observable<SystemConfigResponseDto> {
-    return this.http.put<SystemConfigResponseDto>(`${this.configUrl}/model`, { model });
+    return this.http.put<SystemConfigResponseDto>(`${this.configUrl}/model`, {
+      model,
+    });
   }
 
   /**
    * Envía una solicitud de análisis de repositorio público de GitHub.
    */
-  analyzeGithubRepo(dto: GithubAnalysisRequestDto): Observable<RepositoryAnalysisResponseDto> {
-    return this.http.post<RepositoryAnalysisResponseDto>(`${this.baseUrl}/github`, dto);
+  analyzeGithubRepo(
+    dto: GithubAnalysisRequestDto,
+  ): Observable<RepositoryAnalysisResponseDto> {
+    return this.http.post<RepositoryAnalysisResponseDto>(
+      `${this.baseUrl}/github`,
+      dto,
+    );
   }
 
   /**
    * Envía un archivo ZIP para extracción y análisis efímero.
    */
-  analyzeZipFile(file: File, projectKey?: string): Observable<RepositoryAnalysisResponseDto> {
+  analyzeZipFile(
+    file: File,
+    projectKey?: string,
+  ): Observable<RepositoryAnalysisResponseDto> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
     if (projectKey && projectKey.trim().length > 0) {
-      formData.append('projectKey', projectKey);
+      formData.append("projectKey", projectKey);
     }
-    return this.http.post<RepositoryAnalysisResponseDto>(`${this.baseUrl}/zip`, formData);
+    return this.http.post<RepositoryAnalysisResponseDto>(
+      `${this.baseUrl}/zip`,
+      formData,
+    );
   }
 }

@@ -53,7 +53,7 @@ export interface AnalysisContext {
 
 export interface RepositoryAnalysisResponseDto {
   projectKey: string;
-  sourceType: 'GITHUB_REPO' | 'ZIP_FILE';
+  sourceType: "GITHUB_REPO" | "ZIP_FILE";
   totalFiles: number;
   totalDirectories: number;
   functionalSummary?: string;

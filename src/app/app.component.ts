@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from '@shared/components/header/header.component';
+import { Component } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
+import { HeaderComponent } from "@shared/components/header/header.component";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
   imports: [RouterOutlet, HeaderComponent],
   template: `
@@ -14,16 +14,18 @@ import { HeaderComponent } from '@shared/components/header/header.component';
       </main>
     </div>
   `,
-  styles: [`
-    .app-layout {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .main-content {
-      flex: 1;
-      padding: 32px 0 64px 0;
-    }
-  `]
+  styles: [
+    `
+      .app-layout {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .main-content {
+        flex: 1;
+        padding: 32px 0 64px 0;
+      }
+    `,
+  ],
 })
 export class AppComponent {}
