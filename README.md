@@ -2,8 +2,6 @@
 
 Frontend desarrollado en **Angular 17 (Standalone Components & Signals)** con **Arquitectura basada en Características (Feature-Based)** y el **Patrón Facade**, diseñado para interactuar mediante **API REST** con el backend `code-insight-api`.
 
-> **Status MVP 1.0**: ✅ **Cerrado y Funcional**. Interfaz de usuario con ingesta unificada (GitHub URL / ZIP File Upload), indicador de progreso de pipeline e informe continuo de síntesis técnica.
-
 ---
 
 ## 🏛️ Arquitectura del Proyecto Frontend
