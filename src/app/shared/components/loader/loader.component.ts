@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
     <div class="loader-backdrop">
       <div class="spinner-card glass-card">
         <div class="spinner"></div>
-        <p class="loader-text">Analyzing Code & Executing Strategy Pattern...</p>
+        <p class="loader-text">Analizando el repositorio...</p>
       </div>
     </div>
   `,
@@ -54,4 +54,4 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class LoaderComponent {}
+export class LoaderComponent { }

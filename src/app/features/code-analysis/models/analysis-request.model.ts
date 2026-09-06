@@ -1,6 +1,9 @@
-export interface CodeAnalysisRequestDto {
+export interface GithubAnalysisRequestDto {
   projectKey: string;
-  sourceCode: string;
-  type: 'JAVA' | 'PYTHON' | 'GENERIC';
-  metadata?: Record<string, any>;
+  repoUrl: string;
+}
+
+export interface ZipAnalysisRequest {
+  file: File;
+  projectKey?: string;
 }

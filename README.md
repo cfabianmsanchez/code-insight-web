@@ -1,81 +1,93 @@
-# Code Insight Web (`code-insight-web`)
+# Code Insight Web (`code-insight-web`) 🚀
 
-Frontend desarrollado en **Angular (v17/18 Standalone & Signals)** con **Arquitectura Feature-Based** y el **Patrón de Diseño Facade**, diseñado para interactuar mediante **API REST** con el backend `code-insight-api`.
+Frontend desarrollado en **Angular 17 (Standalone Components & Signals)** con **Arquitectura basada en Características (Feature-Based)** y el **Patrón Facade**, diseñado para interactuar mediante **API REST** con el backend `code-insight-api`.
+
+> **Status MVP 1.0**: ✅ **Cerrado y Funcional**. Interfaz de usuario con ingesta unificada (GitHub URL / ZIP File Upload), indicador de progreso de pipeline e informe continuo de síntesis técnica.
 
 ---
 
 ## 🏛️ Arquitectura del Proyecto Frontend
 
-El proyecto sigue una estructura altamente modular dividida por áreas de responsabilidad y características (`features`):
+El proyecto sigue una estructura modular limpia dividida por características (`features`) y responsabilidad de datos (`data-access`):
 
-```
+```text
 code-insight-web/
 src/
 ├── app/
 │   ├── app.component.ts               # Layout principal
-│   ├── app.config.ts                  # Configuración Standalone (HttpClient, Router)
+│   ├── app.config.ts                  # Configuración Standalone (provideHttpClient, provideRouter)
 │   ├── app.routes.ts                  # Rutas con lazy loading
 │   │
-│   ├── core/                          # Módulos centrales singleton
+│   ├── core/                          # Elementos transversales singleton
 │   │   └── models/
-│   │       └── api-error.model.ts     # Modelo de error REST
+│   │       └── api-error.model.ts     # Modelo de error RFC 7807
 │   │
-│   ├── shared/                        # Componentes y elementos reutilizables
+│   ├── shared/                        # Componentes reutilizables
 │   │   └── components/
-│   │       ├── header/                # Header con indicador de conexión
-│   │       └── loader/                # Spinner asíncrono
+│   │       ├── header/                # Header con estado de conexión
+│   │       └── loader/                # Spinner asíncrono e indicador de pipeline
 │   │
 │   └── features/                      # Arquitectura basada en características (Feature-Based)
-│       └── code-analysis/             # Característica principal
+│       └── code-analysis/             # Característica principal de análisis
 │           ├── components/
-│           │   ├── code-input/        # Formulario de entrada de código y selección de Strategy
-│           │   ├── metrics-summary/   # Tarjetas de resumen de métricas
-│           │   └── analysis-results/  # Detalle de recomendaciones
-│           ├── facade/                # PATRÓN FACADE
-│           │   └── code-analysis.facade.ts # Facade encapsulando Signals (report, loading, error)
+│           │   ├── analysis-input/    # Pestañas de GitHub URL y Subida de .ZIP
+│           │   ├── summary-card/      # Resumen Funcional destacado y Ficha Técnica
+│           │   ├── tech-stack-view/   # Stack Tecnológico y extensión de archivos
+│           │   ├── architecture-evidence/ # Relaciones Inbound/Outbound e Ingeniería
+│           │   ├── components-catalog/# Tabla de componentes filtrable por estereotipos
+│           │   ├── ai-synthesis-view/ # Renderizado del informe Markdown de Ollama
+│           │   └── prompt-inspector/  # Inspector colapsable del contexto LLM
+│           │
+│           ├── data-access/           # CAPA DE ACCESO A DATOS REST
+│           │   └── code-analysis-api.service.ts # Cliente HTTP REST (POST /api/v1/analyses/*)
+│           │
+│           ├── facade/                # PATRÓN FACADE CON ANGULAR SIGNALS
+│           │   └── code-analysis.facade.ts # Facade encapsulando Signals (status, result, error)
+│           │
 │           ├── models/
 │           │   ├── analysis-request.model.ts
-│           │   └── analysis-response.model.ts
-│           ├── services/
-│           │   └── code-analysis-api.service.ts # Cliente HTTP REST
+│           │   └── analysis-response.model.ts # Contrato exacto del backend
+│           │
 │           └── pages/
-│               └── code-analysis-page/# Página contenedora principal
+│               └── code-analysis-page/# Página contenedora orquestada
 │
 ├── environments/
 │   ├── environment.ts                 # Dev: http://localhost:8080/api/v1
 │   └── environment.prod.ts
-└── styles.css                         # Sistema de diseño global (Dark Mode, Glassmorphism)
+└── styles.css                         # Sistema de diseño con fuentes locales del sistema
 ```
 
 ---
 
-## 💡 Patrón Facade Aplicado
+## 💡 Patrón Facade con Angular Signals
 
-El **Patrón Facade (`CodeAnalysisFacade`)** aísla a los componentes visuales de las llamadas de red y manejo de subscripciones RxJS:
+El **Patrón Facade (`CodeAnalysisFacade`)** aísla a los componentes visuales de las llamadas de red y manejo de estados mediante **Angular Signals**:
 
-- **Señales Expuestas (Angular Signals)**:
-  - `facade.report()`: Contiene el resultado actual del análisis (`CodeAnalysisResponseDto`).
-  - `facade.loading()`: Estado booleano de la llamada REST.
+- **Señales Expuestas (Readonly Signals)**:
+  - `facade.status()`: Estado reactivo (`'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR'`).
+  - `facade.result()`: Contiene el resultado consolidado del análisis (`RepositoryAnalysisResponseDto`).
   - `facade.error()`: Mensaje de error de la API backend si ocurre alguna falla.
+  - `facade.loading()`: Señal calculada (`computed`).
   - `facade.hasReport()`: Señal calculada (`computed`).
-- **Acción Simplificada**:
-  - `facade.analyzeCode(requestDto)`: Método único para desencadenar el análisis.
+- **Operaciones Simplificadas**:
+  - `facade.analyzeGithubRepo(repoUrl, projectKey)`: Ejecuta análisis de repositorio GitHub.
+  - `facade.analyzeZipFile(file, projectKey)`: Ejecuta análisis multipart de archivo `.zip`.
+  - `facade.reset()`: Reinicia el estado para un nuevo análisis.
 
 ---
 
-## 🔌 Comunicación REST con Backend
+## 🔌 Comunicación REST con Backend (`code-insight-api`)
 
-El cliente REST (`CodeAnalysisApiService`) consume los endpoints expuestos por la Arquitectura Hexagonal de `code-insight-api`:
+El cliente REST (`CodeAnalysisApiService`) consume los endpoints expuestos por la Arquitectura Hexagonal del backend:
 
-- **Endpoint:** `POST http://localhost:8080/api/v1/analysis`
-- **Request:**
-  ```json
-  {
-    "projectKey": "code-insight-web-app",
-    "sourceCode": "public class OrderService { ... }",
-    "type": "JAVA"
-  }
-  ```
+1. **GitHub Analysis**: `POST http://localhost:8080/api/v1/analyses/github`
+   ```json
+   {
+     "projectKey": "code-insight-api",
+     "repoUrl": "https://github.com/cfabianmsanchez/code-insight-api"
+   }
+   ```
+2. **ZIP Analysis**: `POST http://localhost:8080/api/v1/analyses/zip` (`multipart/form-data`)
 
 ---
 
@@ -90,7 +102,7 @@ npm install
 ```bash
 npm start
 ```
-Abre tu navegador en `http://localhost:4200`
+Abre el navegador en: `http://localhost:4200`
 
 ---
 
